@@ -26,7 +26,7 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
 def filter_by_product_name_and_category(products, product_name, category):
    if product_name in ['T-shirt', 'Jeans']:
         tshirt_recommendations = data[
-            (data['Product Name'] == 'Tshirt') &
+            (data['Product Name'] == 'T-shirt') &
             (data['Category'] == category)
         ].head(5)
         

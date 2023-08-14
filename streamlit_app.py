@@ -48,7 +48,7 @@ def filter_by_user_preferences(products, preferred_category, preferred_size, use
     return filtered_products
 
 # Function to get product recommendations based on user preferences
-def get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=5):
+def get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=10):
     preferred_category, preferred_size = get_user_preferences(user_id)
     
     user_interactions = interaction_matrix.loc[user_id].values
@@ -73,8 +73,10 @@ def main():
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, interaction_matrix, product_similarity)
         
-        # Display recommended product IDs
-        st.write("Recommended Product IDs:", recommendations)
+        # Display recommended product IDs in a tabular format
+        recommendations_df = pd.DataFrame(recommendations, columns=["Recommended Product IDs"])
+        st.write("Recommended Products:")
+        st.dataframe(recommendations_df)
 
 if __name__ == "__main__":
     main()

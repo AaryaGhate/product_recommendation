@@ -17,10 +17,25 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
     recommended_indices = similar_scores.argsort()[-num_recommendations:][::-1]
     recommended_products = interaction_matrix.columns[recommended_indices]
     
-    # Filter recommended products by product name and category
-    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
+    if product_name == "tshirt":
+        # Filter recommended products by product name and category
+        tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
+        jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
+        
+        return tshirt_recommended_products.head(5).append(jeans_recommended_products.head(5))
     
-    return filtered_products
+    elif product_name == "jeans":
+        # Filter recommended products by product name and category
+        jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
+        tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
+        
+        return jeans_recommended_products.head(5).append(tshirt_recommended_products.head(5))
+    
+    else:
+        # Filter recommended products by product name and category
+        filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
+        
+        return filtered_products
 
 # Function to filter recommended products by product name and category
 def filter_by_product_name_and_category(products, product_name, category):

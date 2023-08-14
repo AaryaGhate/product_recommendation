@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import random
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Load the dataset
@@ -9,21 +10,23 @@ data = pd.read_csv("fashion_products.csv")
 interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', values='Rating', fill_value=0)
 product_similarity = cosine_similarity(interaction_matrix.T)
 
-# Function to get product recommendations based on category and size
-def get_recommendations(user_id, category, size, interaction_matrix, product_similarity, num_recommendations=5):
+# Function to get product recommendations based on product name and category
+def get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity, num_recommendations=50):
     user_interactions = interaction_matrix.loc[user_id].values
     similar_scores = product_similarity.dot(user_interactions)
     recommended_indices = similar_scores.argsort()[-num_recommendations:][::-1]
     recommended_products = interaction_matrix.columns[recommended_indices]
     
-    # Filter recommended products by category and size
-    filtered_products = filter_by_category_and_size(recommended_products, category, size)
+    # Filter recommended products by product name and category
+    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
     
     return filtered_products
 
-# Function to filter recommended products by category and size
-def filter_by_category_and_size(products, category, size):
-    return [product_id for product_id in products if data[data['Product ID'] == product_id].iloc[0]['Category'] == category and data[data['Product ID'] == product_id].iloc[0]['Size'] == size]
+# Function to filter recommended products by product name and category
+def filter_by_product_name_and_category(products, product_name, category):
+    filtered_products = data[data['Product Name'] == product_name]
+    filtered_products = filtered_products[filtered_products['Category'] == category]
+    return filtered_products
 
 # Streamlit app
 def main():
@@ -32,17 +35,20 @@ def main():
     
     # User input
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
+    product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
     category = st.selectbox("Select Category", data['Category'].unique())
-    size = st.selectbox("Select Size", data['Size'].unique())
     
     # Recommendation button
     if st.button("Get Recommendations"):
-        recommendations = get_recommendations(user_id, category, size, interaction_matrix, product_similarity)
+        recommendations = get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity)
         
-        # Display recommended product IDs in a tabular format
-        recommendations_df = pd.DataFrame(recommendations, columns=["Recommended Product IDs"])
-        st.write("Recommended Products:")
-        st.dataframe(recommendations_df)
+        if len(recommendations) > 10:
+            random_recommendations = random.sample(list(recommendations['Product ID']), 10)
+        else:
+            random_recommendations = list(recommendations['Product ID'])
+        
+        # Display recommended product IDs
+        st.write("Recommended Product IDs:", random_recommendations)
 
 if __name__ == "__main__":
     main()

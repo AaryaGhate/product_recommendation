@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load the dataset
+
 data = pd.read_csv("fashion_products.csv")
 
-# Create user-item interaction matrix
+
 interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', values='Rating', fill_value=0)
 product_similarity = cosine_similarity(interaction_matrix.T)
 
-# Define a function to get product recommendations
+#Function to get product recommendations
 def get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=5):
     user_interactions = interaction_matrix.loc[user_id].values
     similar_scores = product_similarity.dot(user_interactions)
@@ -19,6 +19,22 @@ def get_recommendations(user_id, interaction_matrix, product_similarity, num_rec
 
 # Streamlit app
 def main():
+
+    bg_color = "#000000"  # Black background
+    text_color = "#FFFFFF"  # White text color
+
+    # Apply the styling to the whole Streamlit app
+    st.markdown(
+        f"""
+        <style>
+            body {{
+            background-color: {bg_color};
+            color: {text_color};
+    }}
+        </style>
+    """,
+    unsafe_allow_html=True,
+    )
     st.title("Fashion Product Recommender")
     st.write("Discover personalized fashion product recommendations.")
     

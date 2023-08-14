@@ -19,33 +19,18 @@ def get_recommendations(user_id, interaction_matrix, product_similarity, num_rec
 
 # Streamlit app
 def main():
-
-    bg_color = "#000000"  # Black background
-    text_color = "#FFFFFF"  # White text color
-
-    # Apply the styling to the whole Streamlit app
-    st.markdown(
-        f"""
-        <style>
-            body {{
-            background-color: {bg_color};
-            color: {text_color};
-    }}
-        </style>
-    """,
-    unsafe_allow_html=True,
-    )
+    
     st.title("Fashion Product Recommender")
     st.write("Discover personalized fashion product recommendations.")
     
-    # User input for selecting a user ID
+    # User input 
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
     
-    # Get recommendations when user clicks a button
+    # Recommendation button
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, interaction_matrix, product_similarity)
         
-        # Display recommended product IDs
+        # Display 
         st.write("Recommended Product IDs:", recommendations)
 
 if __name__ == "__main__":

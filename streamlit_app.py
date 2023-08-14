@@ -39,8 +39,10 @@ def main():
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, category, size, interaction_matrix, product_similarity)
         
-        # Display recommended product IDs
-        st.write("Recommended Product IDs:", recommendations)
+        # Display recommended product IDs in a tabular format
+        recommendations_df = pd.DataFrame(recommendations, columns=["Recommended Product IDs"])
+        st.write("Recommended Products:")
+        st.dataframe(recommendations_df)
 
 if __name__ == "__main__":
     main()

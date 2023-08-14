@@ -17,7 +17,7 @@ def get_user_preferences(user_id):
     return preferred_category, preferred_size
 
 # Function to filter recommended products by user preferences and product name
-def filter_by_user_preferences(products, preferred_category, preferred_size, user_id):
+def filter_by_user_preferences(products, preferred_category, preferred_size, user_id, preferred_product_name):
     filtered_products = []
     
     for product_id in products:
@@ -25,30 +25,31 @@ def filter_by_user_preferences(products, preferred_category, preferred_size, use
         product_category = product_row['Category']
         product_name = product_row['Product Name']
         
-        if product_name == 'Dress':
-            if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Dress')]['Brand'].values[0] or product_row['Color'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Dress')]['Color'].values[0]:
-                filtered_products.append(product_id)
-        
-        elif product_name == 'Shoes':
-            if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Shoes')]['Brand'].values[0] or product_row['Color'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Shoes')]['Color'].values[0]:
-                filtered_products.append(product_id)
-        
-        elif product_name == 'Tshirt':
-            if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Tshirt')]['Brand'].values[0]:
-                filtered_products.append(product_id)
-        
-        elif product_name == 'Jeans':
-            if product_category == preferred_category or product_row['Color'] != data[(data['User ID'] == user_id) & (data['Product Name'] == 'Jeans')]['Color'].values[0]:
-                filtered_products.append(product_id)
-        
-        elif product_name == 'Sweater':
-            if product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Sweater')]['Brand'].values[0]:
-                filtered_products.append(product_id)
+        if product_name == preferred_product_name:
+            if product_name == 'Dress':
+                if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Dress')]['Brand'].values[0] or product_row['Color'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Dress')]['Color'].values[0]:
+                    filtered_products.append(product_id)
+
+            elif product_name == 'Shoes':
+                if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Shoes')]['Brand'].values[0] or product_row['Color'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Shoes')]['Color'].values[0]:
+                    filtered_products.append(product_id)
+
+            elif product_name == 'Tshirt':
+                if product_category == preferred_category or product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Tshirt')]['Brand'].values[0]:
+                    filtered_products.append(product_id)
+
+            elif product_name == 'Jeans':
+                if product_category == preferred_category or product_row['Color'] != data[(data['User ID'] == user_id) & (data['Product Name'] == 'Jeans')]['Color'].values[0]:
+                    filtered_products.append(product_id)
+
+            elif product_name == 'Sweater':
+                if product_row['Brand'] == data[(data['User ID'] == user_id) & (data['Product Name'] == 'Sweater')]['Brand'].values[0]:
+                    filtered_products.append(product_id)
     
     return filtered_products
 
 # Function to get product recommendations based on user preferences
-def get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=10):
+def get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=10, preferred_product_name=""):
     preferred_category, preferred_size = get_user_preferences(user_id)
     
     user_interactions = interaction_matrix.loc[user_id].values
@@ -57,7 +58,7 @@ def get_recommendations(user_id, interaction_matrix, product_similarity, num_rec
     recommended_products = interaction_matrix.columns[recommended_indices]
     
     # Filter recommended products by user preferences and product name
-    filtered_products = filter_by_user_preferences(recommended_products, preferred_category, preferred_size, user_id)
+    filtered_products = filter_by_user_preferences(recommended_products, preferred_category, preferred_size, user_id, preferred_product_name)
     
     return filtered_products
 
@@ -68,10 +69,12 @@ def main():
     
     # User input
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
+    preferred_category = st.selectbox("Select Preferred Category", data['Category'].unique())
+    preferred_product_name = st.selectbox("Select Preferred Product Name", data['Product Name'].unique())
     
     # Recommendation button
     if st.button("Get Recommendations"):
-        recommendations = get_recommendations(user_id, interaction_matrix, product_similarity)
+        recommendations = get_recommendations(user_id, interaction_matrix, product_similarity, preferred_product_name=preferred_product_name)
         
         # Display recommended product IDs in a tabular format
         recommendations_df = pd.DataFrame(recommendations, columns=["Recommended Product IDs"])

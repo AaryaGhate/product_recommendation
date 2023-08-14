@@ -1,16 +1,3 @@
-import streamlit as st
-import pandas as pd
-import random
-from sklearn.metrics.pairwise import cosine_similarity
-
-# Load the dataset
-data = pd.read_csv("fashion_products.csv")
-
-# Create user-item interaction matrix
-interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', values='Rating', fill_value=0)
-product_similarity = cosine_similarity(interaction_matrix.T)
-
-# Function to get product recommendations based on product name and category
 # Function to get product recommendations based on product name and category
 def get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity, num_recommendations=50):
     user_interactions = interaction_matrix.loc[user_id].values
@@ -23,66 +10,47 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
         tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
         jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
         
-        if len(tshirt_recommended_products) >= 5 and len(jeans_recommended_products) >= 5:
-            return tshirt_recommended_products.head(5).append(jeans_recommended_products.head(5))
-        elif len(tshirt_recommended_products) >= 10:
-            return tshirt_recommended_products.head(10)
-        else:
-            return tshirt_recommended_products
+        recommended_products = []
+        tshirt_count = 0
+        
+        for product in tshirt_recommended_products:
+            if tshirt_count < 5:
+                recommended_products.append(product)
+                tshirt_count += 1
+            else:
+                break
+        
+        for product in jeans_recommended_products:
+            recommended_products.append(product)
+            if len(recommended_products) >= 10:
+                break
+        
+        return recommended_products
         
     elif product_name == "jeans":
         # Filter recommended products by product name and category
         jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
         tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
         
-        if len(jeans_recommended_products) >= 5 and len(tshirt_recommended_products) >= 5:
-            return jeans_recommended_products.head(5).append(tshirt_recommended_products.head(5))
-        elif len(jeans_recommended_products) >= 10:
-            return jeans_recommended_products.head(10)
-        else:
-            return jeans_recommended_products
+        recommended_products = []
+        jeans_count = 0
+        
+        for product in jeans_recommended_products:
+            if jeans_count < 5:
+                recommended_products.append(product)
+                jeans_count += 1
+            else:
+                break
+        
+        for product in tshirt_recommended_products:
+            recommended_products.append(product)
+            if len(recommended_products) >= 10:
+                break
+        
+        return recommended_products
         
     else:
         # Filter recommended products by product name and category
         filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
         
         return filtered_products
-
-
-# Function to filter recommended products by product name and category
-def filter_by_product_name_and_category(products, product_name, category):
-    filtered_products = data[data['Product Name'] == product_name]
-    filtered_products = filtered_products[filtered_products['Category'] == category]
-    return filtered_products
-
-# Streamlit app
-def main():
-    st.title("Fashion Product Recommender")
-    st.write("Discover personalized fashion product recommendations.")
-    
-    # User input
-    user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
-    product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
-    category = st.selectbox("Select Category", data['Category'].unique())
-    
-    # Recommendation button
-    if st.button("Get Recommendations"):
-        recommendations = get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity)
-        
-        if len(recommendations) > 10:
-            random_recommendations = random.sample(list(recommendations['Product ID']), 10)
-        else:
-            random_recommendations = list(recommendations['Product ID'])
-        
-        # Display recommended products in tabular format
-        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
-        st.write("Recommended Products:")
-        st.table(recommended_products_info)
-        
-        # Display table of product names, brands, and categories related to the user ID
-        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand']].drop_duplicates()
-        st.write("Products Related to User ID:")
-        st.table(user_products_info)
-
-if __name__ == "__main__":
-    main()

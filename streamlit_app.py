@@ -75,7 +75,7 @@ def main():
     
     # Recommendation button
     if st.button("Get Recommendations"):
-        recommendations = get_recommendations(user_id, interaction_matrix, product_similarity)
+        recommendations = get_recommendations(user_id, interaction_matrix, product_similarity, num_recommendations=10)
         
         # Display recommended product IDs in a tabular format
         recommendations_df = pd.DataFrame(recommendations, columns=["Recommended Product IDs"])

@@ -24,6 +24,7 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
 
 # Function to filter recommended products by product name and category
 def filter_by_product_name_and_category(products, product_name, category):
+   filtered_products=[]
    if product_name in ['T-shirt', 'Jeans']:
         tshirt_recommendations = data[
             (data['Product Name'] == 'T-shirt') &

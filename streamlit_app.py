@@ -14,6 +14,7 @@ product_similarity = cosine_similarity(interaction_matrix.T)
 def filter_by_product_name_and_category(products, product_name, category):
     return products[(products['Product Name'] == product_name) & (products['Category'] == category)]
 
+
 # Function to get product recommendations based on product name and category
 def get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity, num_recommendations=50):
     user_interactions = interaction_matrix.loc[user_id].values
@@ -32,14 +33,13 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
             if tshirt_count < 5:
                 recommended_products.append(product)
                 tshirt_count += 1
-           
+            else:
+                break
         
-        jeans_count = 0
         for product in jeans_recommended_products['Product ID']:
-            if jeans_count < 5:
-                recommended_products.append(product)
-                jeans_count += 1
-           
+            recommended_products.append(product)
+            if len(recommended_products) >= 10:
+                break
         
         return recommended_products
         
@@ -54,14 +54,14 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
             if jeans_count < 5:
                 recommended_products.append(product)
                 jeans_count += 1
-            
+            else:
+                break
         
-        tshirt_count = 0
         for product in tshirt_recommended_products['Product ID']:
-            if tshirt_count < 5:
-                recommended_products.append(product)
-                tshirt_count += 1
-           
+            recommended_products.append(product)
+            if len(recommended_products) >= 10:
+                break
+        
         return recommended_products
         
     else:
@@ -69,9 +69,13 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
         
         # Sort the products based on matching brand with the user's selected brand
         user_brand = data[(data['User ID'] == user_id) & (data['Category'] == category)]['Brand'].iloc[0]
-        sorted_products = filtered_products.sort_values(by=lambda product_id: data[data['Product ID'] == product_id]['Brand'].values[0] == user_brand, ascending=False)
+        matching_brand_mask = filtered_products['Brand'] == user_brand
+        sorted_products = filtered_products[matching_brand_mask].append(filtered_products[~matching_brand_mask])
         
         return sorted_products['Product ID']
+
+
+
 
 # Streamlit app
 def main():

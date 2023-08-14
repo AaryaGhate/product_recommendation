@@ -36,7 +36,7 @@ def filter_by_product_name_and_category(products, product_name, category):
             (data['Category'] == category)
         ].head(5)
         
-        filtered_products = pd.append([tshirt_recommendations, jeans_recommendations])
+        filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
   
     else:
         filtered_products = data[

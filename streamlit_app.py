@@ -65,12 +65,7 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
         
     else:
         filtered_products = filter_by_product_name_and_category(data, product_name, category)
-        
-        # Sort the products based on matching brand with the user's selected brand
-        user_brand = data[(data['User ID'] == user_id) & (data['Category'] == category)]['Brand'].iloc[0]
-        sorted_products = filtered_products.sort_values(by=lambda product_id: data[data['Product ID'] == product_id]['Brand'].values[0] == user_brand, ascending=False)
-        
-        return sorted_products['Product ID']
+        return filtered_products['Product ID']
 
 # Streamlit app
 def main():

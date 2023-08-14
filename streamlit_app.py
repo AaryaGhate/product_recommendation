@@ -57,5 +57,5 @@ def main():
         st.write("Products Related to User ID:")
         st.table(user_products_info)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()

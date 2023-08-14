@@ -47,8 +47,10 @@ def main():
         else:
             random_recommendations = list(recommendations['Product ID'])
         
-        # Display recommended product IDs
-        st.write("Recommended Product IDs:", random_recommendations)
+        # Display recommended products in tabular format
+        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
+        st.write("Recommended Products:")
+        st.table(recommended_products_info)
 
 if __name__ == "__main__":
     main()

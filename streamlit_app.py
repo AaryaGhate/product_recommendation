@@ -11,6 +11,7 @@ interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', val
 product_similarity = cosine_similarity(interaction_matrix.T)
 
 # Function to get product recommendations based on product name and category
+# Function to get product recommendations based on product name and category
 def get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity, num_recommendations=50):
     user_interactions = interaction_matrix.loc[user_id].values
     similar_scores = product_similarity.dot(user_interactions)
@@ -22,20 +23,31 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
         tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
         jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
         
-        return tshirt_recommended_products.head(5).append(jeans_recommended_products.head(5))
-    
+        if len(tshirt_recommended_products) >= 5 and len(jeans_recommended_products) >= 5:
+            return tshirt_recommended_products.head(5).append(jeans_recommended_products.head(5))
+        elif len(tshirt_recommended_products) >= 10:
+            return tshirt_recommended_products.head(10)
+        else:
+            return tshirt_recommended_products
+        
     elif product_name == "jeans":
         # Filter recommended products by product name and category
         jeans_recommended_products = filter_by_product_name_and_category(recommended_products, "jeans", category)
         tshirt_recommended_products = filter_by_product_name_and_category(recommended_products, "tshirt", category)
         
-        return jeans_recommended_products.head(5).append(tshirt_recommended_products.head(5))
-    
+        if len(jeans_recommended_products) >= 5 and len(tshirt_recommended_products) >= 5:
+            return jeans_recommended_products.head(5).append(tshirt_recommended_products.head(5))
+        elif len(jeans_recommended_products) >= 10:
+            return jeans_recommended_products.head(10)
+        else:
+            return jeans_recommended_products
+        
     else:
         # Filter recommended products by product name and category
         filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
         
         return filtered_products
+
 
 # Function to filter recommended products by product name and category
 def filter_by_product_name_and_category(products, product_name, category):

@@ -35,22 +35,15 @@ def main():
     
     # User input
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
-    product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
-    category = st.selectbox("Select Category", data['Category'].unique())
+    product_name = "tshirt"  # For t-shirt recommendations
+    category = "jeans"       # For jeans recommendations
     
     # Recommendation button
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity)
         
-        # Filter recommendations for t-shirt and jeans
-        tshirt_recommendations = recommendations[recommendations['Product Name'] == 'tshirt'].head(5)
-        jeans_recommendations = recommendations[recommendations['Category'] == 'jeans'].head(5)
-        
-        # Combine the recommendations
-        combined_recommendations = pd.concat([tshirt_recommendations, jeans_recommendations])
-        
         # Display recommended products in tabular format
-        recommended_products_info = combined_recommendations[['Product ID', 'Product Name', 'Category', 'Brand']]
+        recommended_products_info = recommendations[['Product ID', 'Product Name', 'Category', 'Brand']].head(5)
         st.write("Recommended Products:")
         st.table(recommended_products_info)
 

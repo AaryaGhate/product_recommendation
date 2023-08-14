@@ -3,10 +3,10 @@ import pandas as pd
 import random
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load the dataset
+
 data = pd.read_csv("fashion_products.csv")
 
-# Create user-item interaction matrix
+# Create interaction matrix and find similarity
 interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', values='Rating', fill_value=0)
 product_similarity = cosine_similarity(interaction_matrix.T)
 

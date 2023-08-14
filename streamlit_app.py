@@ -42,13 +42,15 @@ def main():
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity)
         
-        if len(recommendations) > 10:
-            random_recommendations = random.sample(list(recommendations['Product ID']), 10)
-        else:
-            random_recommendations = list(recommendations['Product ID'])
+        # Filter recommendations for t-shirt and jeans
+        tshirt_recommendations = recommendations[recommendations['Product Name'] == 'tshirt'].head(5)
+        jeans_recommendations = recommendations[recommendations['Category'] == 'jeans'].head(5)
+        
+        # Combine the recommendations
+        combined_recommendations = pd.concat([tshirt_recommendations, jeans_recommendations])
         
         # Display recommended products in tabular format
-        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
+        recommended_products_info = combined_recommendations[['Product ID', 'Product Name', 'Category', 'Brand']]
         st.write("Recommended Products:")
         st.table(recommended_products_info)
 

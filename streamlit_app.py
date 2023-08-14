@@ -24,7 +24,7 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
 
 # Function to filter recommended products by product name and category
 def filter_by_product_name_and_category(products, product_name, category):
-   if product_name in ['Tshirt', 'Jeans']:
+   if product_name in ['T-shirt', 'Jeans']:
         tshirt_recommendations = data[
             (data['Product Name'] == 'Tshirt') &
             (data['Category'] == category)
@@ -35,7 +35,7 @@ def filter_by_product_name_and_category(products, product_name, category):
             (data['Category'] == category)
         ].head(5)
         
-        filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
+        filtered_products = pd.append([tshirt_recommendations, jeans_recommendations])
   
     else:
         filtered_products = data[

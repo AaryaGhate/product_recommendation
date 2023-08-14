@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Load the dataset
-data = pd.read_csv('fashion_products.csv')
+data = pd.read_csv("C:\Users\Aarya Ghate\OneDrive\Desktop\Tech\ML\fashion_products.csv")
 
 # Create user-item interaction matrix
 interaction_matrix = data.pivot_table(index='User ID', columns='Product ID', values='Rating', fill_value=0)

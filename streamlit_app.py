@@ -65,12 +65,12 @@ def main():
         else:
             random_recommendations = list(recommendations['Product ID'])
         
-        # Display recommended products in tabular format
+        # Display 
         recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
         st.write("Recommended Products:")
         st.table(recommended_products_info)
         
-        # Display table of product names, brands, and categories related to the user ID
+        
         user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand']].drop_duplicates()
         st.write("Products Related to User ID:")
         st.table(user_products_info)

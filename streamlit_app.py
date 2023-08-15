@@ -18,22 +18,24 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
     recommended_products = interaction_matrix.columns[recommended_indices]
     
     # Filter recommended products by product name and category
-    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
+    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category,color)
     
     return filtered_products
 
 # Function to filter recommended products by product name and category
-def filter_by_product_name_and_category(products, product_name, category):
+def filter_by_product_name_and_category(products, product_name, category,color):
    filtered_products=[]
    if product_name in ['T-shirt', 'Jeans']:
         tshirt_recommendations = data[
             (data['Product Name'] == 'T-shirt') &
-            (data['Category'] == category)
+            (data['Category'] == category)&
+            (data['Color'] == color)
         ].head(num_recommendations/2)
         
         jeans_recommendations = data[
             (data['Product Name'] == 'Jeans') &
-            (data['Category'] == category)
+            (data['Category'] == category)&
+            (data['Color'] == color)
         ].head(num_recommendations/2)
         
         filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
@@ -41,7 +43,8 @@ def filter_by_product_name_and_category(products, product_name, category):
     else:
         filtered_products = data[
             (data['Product Name'] == product_name) &
-            (data['Category'] == category)
+            (data['Category'] == category)&
+            (data['Color'] == color)
         ]
     
     return filtered_products
@@ -55,6 +58,7 @@ def main():
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
     product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
     category = st.selectbox("Select Category", data['Category'].unique())
+    color = st.selectbox("Select Color", data['Color'].unique())
     
     # Recommendation button
     if st.button("Get Recommendations"):
@@ -66,12 +70,12 @@ def main():
             random_recommendations = list(recommendations['Product ID'])
         
         # Display 
-        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
+        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand','Color']]
         st.write("Recommended Products:")
         st.table(recommended_products_info)
         
         
-        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand']].drop_duplicates()
+        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand','Color']].drop_duplicates()
         st.write("Products Related to User ID:")
         st.table(user_products_info)
 

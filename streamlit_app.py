@@ -29,12 +29,12 @@ def filter_by_product_name_and_category(products, product_name, category):
         tshirt_recommendations = data[
             (data['Product Name'] == 'T-shirt') &
             (data['Category'] == category)
-        ].head(5)
+        ].head(num_recommendations/2)
         
         jeans_recommendations = data[
             (data['Product Name'] == 'Jeans') &
             (data['Category'] == category)
-        ].head(5)
+        ].head(num_recommendations/2)
         
         filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
   

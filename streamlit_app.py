@@ -18,34 +18,33 @@ def get_recommendations(user_id, product_name, category, interaction_matrix, pro
     recommended_products = interaction_matrix.columns[recommended_indices]
     
     # Filter recommended products by product name and category
-    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category,color)
+    filtered_products = filter_by_product_name_and_category(recommended_products, product_name, category)
     
     return filtered_products
 
 # Function to filter recommended products by product name and category
-def filter_by_product_name_and_category(products, product_name, category,color):
-   filtered_products=[]
-   if product_name in ['T-shirt', 'Jeans']:
-        tshirt_recommendations = data[
-            (data['Product Name'] == 'T-shirt') &
-            (data['Category'] == category)&
-            (data['Color'] == color)
-        ].head(num_recommendations/2)
+def filter_by_product_name_and_category(products, product_name, category):
+    
+    filtered_products=[]
+    if product_name in ['T-shirt', 'Jeans']:
+         tshirt_recommendations = data[
+             (data['Product Name'] == 'T-shirt') &
+             (data['Category'] == category)
+         ].head(num_recommendations/2)
         
-        jeans_recommendations = data[
-            (data['Product Name'] == 'Jeans') &
-            (data['Category'] == category)&
-            (data['Color'] == color)
-        ].head(num_recommendations/2)
+         jeans_recommendations = data[
+             (data['Product Name'] == 'Jeans') &
+             (data['Category'] == category)  
+         ].head(num_recommendations/2)
         
-        filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
+         filtered_products = pd.concat([tshirt_recommendations, jeans_recommendations])
   
     else:
-        filtered_products = data[
-            (data['Product Name'] == product_name) &
-            (data['Category'] == category)&
-            (data['Color'] == color)
-        ]
+         filtered_products = data[
+             (data['Product Name'] == product_name) &
+             (data['Category'] == category)&
+            
+         ]
     
     return filtered_products
 
@@ -58,7 +57,7 @@ def main():
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
     product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
     category = st.selectbox("Select Category", data['Category'].unique())
-    color = st.selectbox("Select Color", data['Color'].unique())
+   
     
     # Recommendation button
     if st.button("Get Recommendations"):

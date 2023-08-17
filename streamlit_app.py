@@ -50,15 +50,22 @@ def filter_by_product_name_and_category(products, product_name, category):
 
 # Streamlit app
 def main():
+    # Set Streamlit theme and layout
+    st.set_page_config(
+        page_title="Fashion Product Recommender",
+        page_icon="🛍️",
+        layout="wide",
+    )
+
+    # App header
     st.title("Fashion Product Recommender")
-    st.write("Discover personalized fashion product recommendations.")
+    st.markdown("Discover personalized fashion product recommendations.")
     
     # User input
     user_id = st.number_input("Enter User ID", min_value=1, max_value=1000)
     product_name = st.selectbox("Select Product Name", data['Product Name'].unique())
     category = st.selectbox("Select Category", data['Category'].unique())
    
-    
     # Recommendation button
     if st.button("Get Recommendations"):
         recommendations = get_recommendations(user_id, product_name, category, interaction_matrix, product_similarity)
@@ -68,15 +75,15 @@ def main():
         else:
             random_recommendations = list(recommendations['Product ID'])
         
-        # Display 
-        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
-        st.write("Recommended Products:")
-        st.table(recommended_products_info)
+        # Display recommended products with improved styling
+        st.subheader("Recommended Products:")
+        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand', 'Color']]
+        st.dataframe(recommended_products_info.style.highlight_max(axis=0), width=600)
         
-        
-        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand']].drop_duplicates()
-        st.write("Products Related to User ID:")
-        st.table(user_products_info)
+        # Display user's related products with improved styling
+        st.subheader("User History:")
+        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand', 'Color']].drop_duplicates()
+        st.dataframe(user_products_info.style.highlight_max(axis=0), width=600)
 
 if __name__ == "__main__":
     main()

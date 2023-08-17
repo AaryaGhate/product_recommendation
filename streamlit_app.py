@@ -69,12 +69,12 @@ def main():
             random_recommendations = list(recommendations['Product ID'])
         
         # Display 
-        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand','Color']]
+        recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand']]
         st.write("Recommended Products:")
         st.table(recommended_products_info)
         
         
-        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand','Color']].drop_duplicates()
+        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand']].drop_duplicates()
         st.write("Products Related to User ID:")
         st.table(user_products_info)
 

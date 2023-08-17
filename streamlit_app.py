@@ -42,7 +42,7 @@ def filter_by_product_name_and_category(products, product_name, category):
     else:
          filtered_products = data[
              (data['Product Name'] == product_name) &
-             (data['Category'] == category)&
+             (data['Category'] == category)
             
          ]
     

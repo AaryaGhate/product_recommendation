@@ -47,16 +47,18 @@ def filter_by_product_name_and_category(products, product_name, category):
          ]
     
     return filtered_products
+
+
 # Streamlit app
 def main():
-    # Set Streamlit theme
+    
     st.set_page_config(
         page_title="Fashion Product Recommender",
         page_icon="🛍️",
-        layout="wide",
+        
     )
 
-    # App header
+    
     st.title("Fashion Product Recommender")
     st.markdown("Discover personalized fashion product recommendations.")
     
@@ -79,8 +81,8 @@ def main():
         recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand', 'Color']]
         st.table(recommended_products_info)
         
-        # Display user's related products
-        st.subheader("Products Related to User ID:")
+        # Display user's history
+        st.subheader("User History:")
         user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand', 'Color']].drop_duplicates()
         st.table(user_products_info)
 

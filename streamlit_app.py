@@ -76,7 +76,7 @@ def main():
             random_recommendations = list(recommendations['Product ID'])
         
         # Display recommended products with improved styling
-        st.subheader("Recommended Products:")
+        st.subheader("Recommended Products :")
         recommended_products_info = data[data['Product ID'].isin(random_recommendations)][['Product ID', 'Product Name', 'Category', 'Brand', 'Color']]
         st.dataframe(recommended_products_info.style.highlight_max(axis=0), width=600)
         

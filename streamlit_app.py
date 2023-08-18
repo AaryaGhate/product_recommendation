@@ -52,11 +52,14 @@ def filter_by_product_name_and_category(products, product_name, category):
 
 # Streamlit app
 def main():
+    
     st.set_page_config(
         page_title="Fashion Product Recommender",
         page_icon="🛍️",
+        
     )
 
+    
     st.title("Fashion Product Recommender")
     st.markdown("Discover personalized fashion product recommendations.")
     
@@ -80,13 +83,9 @@ def main():
         st.table(recommended_products_info)
         
         # Display user's history
-        st.subheader("User History :")
-        user_history_info = data[
-            (data['User ID'] == user_id) &
-            (data['Product Name'] == product_name) &
-            (data['Category'] == category)
-        ][['Product Name', 'Category', 'Brand', 'Color']].drop_duplicates()
-        st.table(user_history_info)
+        st.subheader("User History:")
+        user_products_info = data[data['User ID'] == user_id][['Product Name', 'Category', 'Brand', 'Color']].drop_duplicates()
+        st.table(user_products_info)
 
 if __name__ == "__main__":
     main()

@@ -80,7 +80,7 @@ def main():
         st.table(recommended_products_info)
         
         # Display user's history
-        st.subheader("User History:")
+        st.subheader("User History :")
         user_history_info = data[
             (data['User ID'] == user_id) &
             (data['Product Name'] == product_name) &
